@@ -1,0 +1,3 @@
+[workspace]
+members = ["crates/common", "crates/cgroupd", "crates/cgctl"]
+resolver = "2"

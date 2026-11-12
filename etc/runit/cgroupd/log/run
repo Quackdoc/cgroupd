@@ -1,0 +1,3 @@
+#!/bin/sh
+# runit log service for cgroupd. Directory: /etc/sv/cgroupd/log/run
+exec svlogd -tt /var/log/cgroupd

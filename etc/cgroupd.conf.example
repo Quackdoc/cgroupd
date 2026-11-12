@@ -1,0 +1,12 @@
+controllers = ["cpu", "cpuset", "memory", "pids", "io"]
+socket_path = "/run/cgroupd.sock"
+allow_root = false
+# Spawn engine (Moonshine-style fork+exec into session cgroups).
+allow_spawn = true
+# Touch cgroup.subtree_control above the managed tree. Default false:
+# only our own subtree (common..=user) is ever written.
+manage_ancestors = false
+# Grace for StopSession SIGTERM -> SIGKILL, and pre/post hook bound basis.
+default_grace_secs = 2
+# Total bound for pre-hooks + exec barrier at spawn.
+spawn_start_timeout_secs = 90

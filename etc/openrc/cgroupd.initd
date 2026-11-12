@@ -1,0 +1,16 @@
+#!/sbin/openrc-run
+# cgroupd: foreground service, no pidfile needed with supervise-daemon.
+command="/usr/bin/cgroupd"
+command_args="--config /etc/cgroupd.conf --log-target both"
+command_background=false
+supervisor=supervise-daemon
+
+depend() {
+  need localmount
+  need dbus
+  before sshd
+}
+
+start_pre() {
+  test -d /sys/fs/cgroup/cgroup.controllers || test -f /sys/fs/cgroup/cgroup.controllers
+}

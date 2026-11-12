@@ -1,0 +1,6 @@
+# dinit service (type = process). Requires cgroup2 mounted.
+type = process
+command = /usr/bin/cgroupd --config /etc/cgroupd.conf --log-target both
+depends-on = cgroups
+depends-on = dbus
+logfile = /var/log/dinit/cgroupd.log

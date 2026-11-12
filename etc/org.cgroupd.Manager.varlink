@@ -1,0 +1,70 @@
+# cgroupd session and spawn management.
+#
+# Callers are identified implicitly: the daemon resolves the caller's UID
+# from SO_PEERCRED, so `uid` is optional everywhere and means "self" when
+# omitted. An explicit `uid` is honored only for root (uid 0) callers,
+# including `cgctl pam`.
+interface org.cgroupd.Manager
+
+# A stdio redirect: `kind` is null, inherit, file, append or truncate;
+# `path` is absolute and used only for file, append and truncate.
+type StdioSpec = (
+	kind: string,
+	path: ?string
+)
+
+# A client-chosen controller limit: bare file name (`cpu.weight`), value.
+type Limit = (
+	file: string,
+	value: string
+)
+
+# Scope selects the cgroup subtree: login sessions (`session/<sid>`,
+# cf. logind session scopes) or spawned apps (`app/<aid>`, cf. app.slice).
+# Pre-scope clients omit `scope` and get session behavior.
+type Scope : string (session, app)
+
+# Ensure the caller's user subtree exists (delegated, chown'd).
+method EnsureUser(uid: ?int) -> (detail: string)
+
+# Place `pid` into a new login session `sid` (or app `sid` with
+# `scope=app`). Non-root callers may only move their own pids.
+method CreateSession(uid: ?int, scope: Scope, sid: string, pid: int) -> (detail: string)
+
+# Remove an empty session or app; busy ones are kept.
+method RemoveSession(uid: ?int, scope: Scope, sid: string) -> (detail: string)
+
+# List the caller's login sessions.
+method ListSessions(uid: ?int) -> (detail: string)
+
+# List the caller's spawned apps.
+method ListApps(uid: ?int) -> (detail: string)
+
+# Fork+setuid+exec `program` into app `aid`.
+# Note: `pre`/`post` hooks are whitespace-split command lines.
+method SpawnApp(
+	uid: ?int,
+	aid: string,
+	program: string,
+	args: []string,
+	env: []string,
+	stdout: StdioSpec,
+	stderr: StdioSpec,
+	cwd: ?string,
+	umask: ?int,
+	limits: []Limit,
+	pre: [][]string,
+	post: [][]string
+) -> (detail: string)
+
+# SIGTERM the session/app tree, then SIGKILL survivors after `grace_secs`.
+method StopSession(uid: ?int, scope: Scope, sid: string, grace_secs: int) -> (detail: string)
+
+# Instant state query (JSON in `detail`).
+method GetState(uid: ?int, scope: Scope, sid: string) -> (detail: string)
+
+# Block until the session/app reaches a terminal state or `timeout_secs` elapse.
+method WaitSession(uid: ?int, scope: Scope, sid: string, timeout_secs: int) -> (detail: string)
+
+# Operational failure; `message` carries the human-readable detail.
+error InternalError (message: string)

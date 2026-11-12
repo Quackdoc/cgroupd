@@ -1,0 +1,4 @@
+#!/bin/sh
+# s6 service for cgroupd (longrun). Directory: /etc/s6/sv/cgroupd/run
+# Requires cgroup2 mounted and system dbus up; s6 ordering handles the rest.
+exec /usr/bin/cgroupd --config /etc/cgroupd.conf --log-target both

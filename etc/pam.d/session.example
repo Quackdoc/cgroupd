@@ -1,0 +1,2 @@
+# Add to /etc/pam.d/login, /etc/pam.d/sshd (and DMs):
+session optional pam_exec.so quiet /usr/bin/cgctl pam

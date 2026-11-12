@@ -1,0 +1,14 @@
+[package]
+name = "cgctl"
+version = "0.1.0"
+edition = "2024"
+license = "GPL-2.0-or-later"
+
+[[bin]]
+name = "cgctl"
+path = "src/main.rs"
+
+[dependencies]
+cgroupd-common = { version = "0.1.0", path = "../common" }
+usage-rs = "7"
+uzers = "0.12"

@@ -1,0 +1,9 @@
+[package]
+name = "cgroupd-common"
+version = "0.1.0"
+edition = "2024"
+license = "GPL-2.0-or-later"
+
+[dependencies]
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"

@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /usr/bin/cgroupd --config /etc/cgroupd.conf --log-target both
